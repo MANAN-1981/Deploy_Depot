@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deploy Depot — Manan Abasana</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Bricolage+Grotesque:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fafafa;
+      --text: #111;
+      --muted: #888;
+      --border: #e0e0e0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Blobs ── */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: .55;
+      pointer-events: none;
+      z-index: 0;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    .blob-tl { width: 320px; height: 320px; background: radial-gradient(circle, #a8e6a3, #d4f5c4); top: -60px; left: -80px; animation-delay: 0s; }
+    .blob-tr { width: 380px; height: 380px; background: radial-gradient(circle, #ffb3b3, #ffd6cc); top: -80px; right: -100px; animation-delay: -4s; }
+    .blob-bl { width: 260px; height: 260px; background: radial-gradient(circle, #b3d4ff, #c8e8ff); bottom: 60px; left: 40px; animation-delay: -8s; }
+    .blob-bm { width: 200px; height: 200px; background: radial-gradient(circle, #ffe6a0, #fff3cc); bottom: 20px; right: 30%; animation-delay: -2s; }
+
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(20px, 30px) scale(1.08); }
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 48px;
+    }
+
+    .nav-dots {
+      display: grid;
+      grid-template-columns: repeat(4, 5px);
+      gap: 5px;
+    }
+    .nav-dots span {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #aaa;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 8px;
+    }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 6px 18px;
+      border-radius: 100px;
+      transition: color .2s, background .2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active {
+      color: var(--text);
+      background: #fff;
+      border: 1px solid var(--border);
+      font-weight: 500;
+    }
+
+    .nav-logo {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo span { color: #4CAF50; }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 80px 24px 60px;
+    }
+
+    .hero h1 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(72px, 13vw, 148px);
+      font-weight: 800;
+      letter-spacing: -4px;
+      line-height: .95;
+      color: var(--text);
+      margin-bottom: 8px;
+      animation: fadeUp .7s ease both;
+    }
+
+    .hero-sub-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(22px, 4vw, 36px);
+      font-weight: 400;
+      letter-spacing: -0.5px;
+      color: #333;
+      margin-bottom: 28px;
+      animation: fadeUp .7s .1s ease both;
+    }
+
+    .hero-desc {
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 420px;
+      margin: 0 auto 44px;
+      line-height: 1.7;
+      font-weight: 300;
+      animation: fadeUp .7s .2s ease both;
+    }
+
+    /* ── CTA buttons ── */
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255,255,255,.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 6px 6px 28px;
+      gap: 0;
+      animation: fadeUp .7s .3s ease both;
+      text-decoration: none;
+    }
+    .cta-text {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--muted);
+      margin-right: 16px;
+    }
+    .cta-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--text);
+      border-radius: 50%;
+      color: #fff;
+      font-size: 16px;
+      margin-right: 4px;
+      transition: transform .2s;
+      text-decoration: none;
+    }
+    .hero-cta:hover .cta-arrow { transform: rotate(45deg); }
+    .cta-btn {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 10px 28px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .2s;
+    }
+    .cta-btn:hover { background: #f5f5f5; }
+
+    /* ── Apps section ── */
+    .apps-section {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px 100px;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .section-label span {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Card ── */
+    .app-card {
+      background: rgba(255,255,255,.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 24px;
+      align-items: start;
+      transition: transform .2s ease, box-shadow .2s ease;
+      animation: fadeUp .7s .4s ease both;
+    }
+    .app-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 48px rgba(0,0,0,.08);
+    }
+
+    .app-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      background: #f0f0f0;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      flex-shrink: 0;
+    }
+
+    .app-body { min-width: 0; }
+
+    .app-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .app-title-row h2 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .version-pill {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 100px;
+      background: #f0f0f0;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .app-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+      font-weight: 300;
+    }
+
+    .changelog {
+      background: #f7f7f7;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .changelog-header {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #aaa;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .changelog-header::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #4CAF50;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .changelog-item {
+      font-size: 13px;
+      color: #555;
+      padding: 3px 0;
+      display: flex;
+      gap: 8px;
+      line-height: 1.45;
+    }
+    .changelog-item::before {
+      content: "–";
+      color: #ccc;
+      flex-shrink: 0;
+    }
+
+    /* ── Download side ── */
+    .app-action {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .platform-badge {
+      font-size: 11px;
+      color: var(--muted);
+      background: #f0f0f0;
+      border: 1px solid var(--border);
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+    .btn-download {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--text);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 20px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: opacity .15s, transform .1s;
+      white-space: nowrap;
+    }
+    .btn-download:hover { opacity: .85; transform: translateY(-1px); }
+    .btn-download svg { width: 14px; height: 14px; fill: currentColor; }
+
+    /* ── Footer ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 48px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    footer a { color: inherit; text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      nav { padding: 20px 20px; }
+      .nav-dots { display: none; }
+      .hero h1 { letter-spacing: -2px; }
+      .app-card { grid-template-columns: 1fr; }
+      .app-action { align-items: flex-start; }
+      footer { flex-direction: column; gap: 8px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="blob blob-tl"></div>
+<div class="blob blob-tr"></div>
+<div class="blob blob-bl"></div>
+<div class="blob blob-bm"></div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-dots">
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="nav-links">
+    <a href="#">About</a>
+    <a href="#apps">Apps</a>
+    <a href="#" class="active">Home</a>
+    <a href="mailto:you@example.com">Contact</a>
+  </div>
+
+  <a class="nav-logo" href="#">DD<span>.</span></a>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <h1>DEPLOY</h1>
+  <div class="hero-sub-title">Depot</div>
+  <p class="hero-desc">
+    Direct APK downloads for Android apps crafted by Manan Abasana.
+    No Play Store. No middleman. Just great software.
+  </p>
+  <div class="hero-cta">
+    <span class="cta-text">Browse</span>
+    <a href="#apps" class="cta-arrow">↓</a>
+    <a href="#apps" class="cta-btn">View Apps</a>
+  </div>
+</div>
+
+<!-- Apps -->
+<div class="apps-section" id="apps">
+  <div class="section-label">
+    <span>Available Apps</span>
+  </div>
+
+  <div class="app-card">
+    <div class="app-icon">📋</div>
+
+    <div class="app-body">
+      <div class="app-title-row">
+        <h2>AttendanceIQ</h2>
+        <span class="version-pill">v1.1.0</span>
+      </div>
+      <p class="app-desc">
+        Track your lecture attendance, calculate how many more you need,
+        and send correction emails directly to faculty — all in one place.
+      </p>
+      <div class="changelog">
+        <div class="changelog-header">What's new in 1.1.0</div>
+        <div class="changelog-item">Improved email delivery with Gmail deep link</div>
+        <div class="changelog-item">Faster attendance calculation engine</div>
+        <div class="changelog-item">Fixed date picker crash on older devices</div>
+      </div>
+    </div>
+
+    <div class="app-action">
+      <span class="platform-badge">Android 6.0+</span>
+      <a class="btn-download" href="apps/attendance/app-release.apk" download>
+        <svg viewBox="0 0 24 24"><path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-6 2h12v2H6v-2z"/></svg>
+        Download APK
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <span>© 2025 Deploy Depot</span>
+  <span>Built by <a href="mailto:you@example.com">Manan Abasana</a></span>
+</footer>
+
+</body>
+</html>
