@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Download the latest Android APKs for Rhythm75 and Nisbat directly from Deploy Depot." />
+  <meta name="theme-color" content="#fafafa" />
   <title>Deploy Depot — Manan Abasana</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Bricolage+Grotesque:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -342,6 +344,19 @@
       padding: 4px 12px;
       border-radius: 100px;
     }
+    .metadata-badge {
+      font-size: 10px;
+      color: #9b6b00;
+      background: #fff6d9;
+      border: 1px solid #f0d995;
+      padding: 3px 10px;
+      border-radius: 100px;
+      line-height: 1.2;
+      display: none;
+    }
+    .metadata-badge[data-visible="true"] {
+      display: inline-block;
+    }
     .btn-download {
       display: flex;
       align-items: center;
@@ -359,6 +374,11 @@
     }
     .btn-download:hover { opacity: .85; transform: translateY(-1px); }
     .btn-download svg { width: 14px; height: 14px; fill: currentColor; }
+    .btn-download[aria-disabled="true"] {
+      pointer-events: none;
+      opacity: .6;
+      transform: none;
+    }
 
     /* ── Footer ── */
     footer {
@@ -400,7 +420,7 @@
 <div class="blob blob-bm"></div>
 
 <!-- Nav -->
-<nav>
+<nav aria-label="Primary navigation">
   <div class="nav-dots">
     <span></span><span></span><span></span><span></span>
     <span></span><span></span><span></span><span></span>
@@ -438,39 +458,161 @@
     <span>Available Apps</span>
   </div>
 
-  <div class="app-card">
+  <article class="app-card" data-app="attendance">
     <div class="app-icon">📋</div>
 
     <div class="app-body">
       <div class="app-title-row">
         <h2>Rhythm75</h2>
-        <span class="version-pill">v1.0.0</span>
+        <span class="version-pill" data-field="version">v1.0.0</span>
       </div>
       <p class="app-desc">
         Track your lecture attendance, calculate how many more you need,
         and send correction emails directly to faculty — all in one place.
       </p>
       <div class="changelog">
-        <div class="changelog-header">What's new in 1.0.0</div>
-        <div class="changelog-item">Initial release</div>
+        <div class="changelog-header" data-field="changelog-title">What's new in 1.0.0</div>
+        <div class="changelog-item" data-field="changelog-item">Initial release</div>
       </div>
     </div>
 
     <div class="app-action">
       <span class="platform-badge">Android 10.0+</span>
-      <a class="btn-download" href="apps/attendance/Rhythm75.apk" download>
+      <span class="metadata-badge" data-field="metadata-badge" data-visible="false" aria-live="polite">Using fallback metadata</span>
+      <a class="btn-download" href="apps/attendance/Rhythm75.apk" download data-field="download-link" aria-label="Download Rhythm75 APK">
         <svg viewBox="0 0 24 24"><path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-6 2h12v2H6v-2z"/></svg>
         Download APK
       </a>
     </div>
-  </div>
+  </article>
+
+  <article class="app-card" data-app="nisbat">
+    <div class="app-icon">💬</div>
+
+    <div class="app-body">
+      <div class="app-title-row">
+        <h2>Nisbat</h2>
+        <span class="version-pill" data-field="version">v1.0.0</span>
+      </div>
+      <p class="app-desc">
+        Secure and private messaging app built with end-to-end encryption, self-destructing messages, and a focus on user privacy.
+      </p>
+      <div class="changelog">
+        <div class="changelog-header" data-field="changelog-title">What's new in 1.0.0</div>
+        <div class="changelog-item" data-field="changelog-item">Initial release</div>
+      </div>
+    </div>
+
+    <div class="app-action">
+      <span class="platform-badge">Android 10.0+</span>
+      <span class="metadata-badge" data-field="metadata-badge" data-visible="false" aria-live="polite">Using fallback metadata</span>
+      <a class="btn-download" href="apps/nisbat/Nisbat.apk" download data-field="download-link" aria-label="Download Nisbat APK">
+        <svg viewBox="0 0 24 24"><path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-6 2h12v2H6v-2z"/></svg>
+        Download APK
+      </a>
+    </div>
+  </article>
 </div>
+
+  
 
 <!-- Footer -->
 <footer>
   <span>© 2026 Deploy Depot</span>
   <span>Built by <a href="mailto:manan565666@gmail.com">Manan Abasana</a></span>
 </footer>
+
+<script>
+  (function () {
+    const APP_CONFIG = {
+      attendance: {
+        versionPath: 'apps/attendance/version.json',
+        fallbackApkPath: 'apps/attendance/Rhythm75.apk',
+        fallbackVersion: '1.0.0',
+        fallbackDescription: 'Initial release'
+      },
+      nisbat: {
+        versionPath: 'apps/nisbat/version.json',
+        fallbackApkPath: 'apps/nisbat/Nisbat.apk',
+        fallbackVersion: '1.0.0',
+        fallbackDescription: 'Initial release'
+      }
+    };
+
+    const coalesce = (...values) => values.find((value) => value !== undefined && value !== null && String(value).trim() !== '');
+
+    const toAbsoluteUrl = (pathOrUrl, fallbackPath) => {
+      try {
+        return new URL(pathOrUrl || fallbackPath, window.location.href).href;
+      } catch {
+        return fallbackPath;
+      }
+    };
+
+    const filenameFromUrl = (url, fallbackName) => {
+      try {
+        const pathname = new URL(url, window.location.href).pathname;
+        const file = pathname.split('/').pop();
+        return file || fallbackName;
+      } catch {
+        return fallbackName;
+      }
+    };
+
+    const applyCardData = (card, payload, fallback, usedFallback = false) => {
+      const version = coalesce(payload.latest_version, payload.version, fallback.fallbackVersion);
+      const build = coalesce(payload.build_number, payload.build, '');
+      const description = coalesce(payload.update_description, payload.notes, fallback.fallbackDescription);
+      const apkUrl = toAbsoluteUrl(coalesce(payload.apk_url, fallback.fallbackApkPath), fallback.fallbackApkPath);
+
+      const versionEl = card.querySelector('[data-field="version"]');
+      const changelogTitleEl = card.querySelector('[data-field="changelog-title"]');
+      const changelogItemEl = card.querySelector('[data-field="changelog-item"]');
+      const downloadLinkEl = card.querySelector('[data-field="download-link"]');
+    const metadataBadgeEl = card.querySelector('[data-field="metadata-badge"]');
+
+      if (versionEl) versionEl.textContent = `v${version}`;
+      if (changelogTitleEl) changelogTitleEl.textContent = `What's new in ${version}`;
+      if (changelogItemEl) changelogItemEl.textContent = description;
+
+      if (downloadLinkEl) {
+        downloadLinkEl.href = apkUrl;
+        downloadLinkEl.setAttribute('download', filenameFromUrl(apkUrl, 'app-release.apk'));
+        downloadLinkEl.setAttribute('aria-disabled', 'false');
+        downloadLinkEl.title = build ? `Build ${build}` : 'Download latest APK';
+      }
+
+      if (metadataBadgeEl) {
+        metadataBadgeEl.setAttribute('data-visible', usedFallback ? 'true' : 'false');
+        metadataBadgeEl.textContent = usedFallback ? 'Using fallback metadata' : 'Metadata loaded';
+        metadataBadgeEl.title = usedFallback
+          ? 'Could not load version.json, showing built-in defaults.'
+          : 'Metadata loaded successfully.';
+      }
+    };
+
+    const loadCard = async (card) => {
+      const appKey = card.getAttribute('data-app');
+      const config = APP_CONFIG[appKey];
+      if (!config) return;
+
+      try {
+        const response = await fetch(`${config.versionPath}?t=${Date.now()}`, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`Failed to load ${config.versionPath}: ${response.status}`);
+        const payload = await response.json();
+        applyCardData(card, payload, config, false);
+      } catch (error) {
+        console.warn(`[Deploy Depot] Falling back to static data for ${appKey}.`, error);
+        applyCardData(card, {}, config, true);
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.app-card[data-app]');
+      cards.forEach((card) => loadCard(card));
+    });
+  })();
+</script>
 
 </body>
 </html>
